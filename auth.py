@@ -4,6 +4,8 @@ import jwt
 async def get_jwt(request: Request):
     jwt_header = request.headers.get("Authorization")
 
+    print("in get_jwt")
+
     if jwt_header:
         try:
             token = jwt.decode(jwt_header, "secret",algorithms=["HS512"])

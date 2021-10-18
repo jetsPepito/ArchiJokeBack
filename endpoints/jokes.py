@@ -1,10 +1,13 @@
 from datetime import datetime
 
 from bson import ObjectId
-from fastapi import APIRouter, Body
+from fastapi import APIRouter, Body, Depends
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 from starlette import status
+from auth import get_jwt
+
+from fastapi.security.api_key import APIKey
 
 from database import *
 from fastapi.encoders import jsonable_encoder
@@ -20,7 +23,7 @@ class Joke(BaseModel):
     likes: int
     dislikes: int
     author: str
-    author_id: PyObjectId
+    author_id: str
 
     class Config:
         allow_population_by_field_name = True
@@ -39,13 +42,13 @@ class Joke(BaseModel):
 
 
 @router.get("/jokes")
-async def getAllJokes():
+async def getAllJokes(token : APIKey = Depends(get_jwt)):
     jokes = await db["jokes"].find().to_list(50)
     return jokes
 
 
 @router.post("/jokes")
-async def addJoke(joke: Joke = Body(...)):
+async def addJoke(joke: Joke = Body(...), token : APIKey = Depends(get_jwt)):
     joke = jsonable_encoder(joke)
     newJoke = await db["jokes"].insert_one(joke)
     created = await db["jokes"].find_one({"_id": newJoke.inserted_id})
