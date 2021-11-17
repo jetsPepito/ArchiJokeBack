@@ -1,7 +1,9 @@
 import motor.motor_asyncio
 from bson import ObjectId
 
-client = motor.motor_asyncio.AsyncIOMotorClient("localhost:27017")
+envfile = open(".env", "r")
+host = envfile.readline()
+client = motor.motor_asyncio.AsyncIOMotorClient(host + ":27017")
 db = client.archijokes
 
 
