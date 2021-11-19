@@ -3,7 +3,7 @@ from bson import ObjectId
 
 envfile = open(".env", "r")
 host = envfile.readline()
-client = motor.motor_asyncio.AsyncIOMotorClient(host + ":80")
+client = motor.motor_asyncio.AsyncIOMotorClient(host + ":27020")
 db = client.archijokes
 
 
